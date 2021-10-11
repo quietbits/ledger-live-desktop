@@ -17,6 +17,7 @@ import { getEnv } from "@ledgerhq/live-common/lib/env";
 import { getLanguages } from "~/config/languages";
 import type { State } from ".";
 import { osLangAndRegionSelector } from "~/renderer/reducers/application";
+import regionsByKey from "../screens/settings/sections/General/regions.json";
 
 export type CurrencySettings = {
   confirmationsNb: number,
@@ -73,6 +74,7 @@ export type SettingsState = {
   language: ?string,
   theme: ?string,
   region: ?string,
+  locale: ?string,
   orderAccounts: string,
   countervalueFirst: boolean,
   autoLockTimeout: number,
@@ -128,12 +130,15 @@ const defaultsForCurrency: Currency => CurrencySettings = crypto => {
   };
 };
 
+const DEFAULT_LOCALE = "en-US";
+
 const INITIAL_STATE: SettingsState = {
   hasCompletedOnboarding: false,
   counterValue: "USD",
   language: "en",
   theme: null,
   region: null,
+  locale: DEFAULT_LOCALE,
   orderAccounts: "balance|desc",
   countervalueFirst: false,
   autoLockTimeout: 10,
@@ -353,6 +358,12 @@ export const userLangAndRegionSelector = (
   }
 };
 
+const localeFallbackToLanguageSelector = (state: State): { locale: string } => {
+  const { language, locale } = state.settings;
+  if (locale && regionsByKey.hasOwnProperty(locale)) return { locale };
+  else return { locale: language || DEFAULT_LOCALE };
+};
+
 export const langAndRegionSelector: OutputSelector<State, void, LangAndRegion> = createSelector(
   userLangAndRegionSelector,
   osLangAndRegionSelector,
@@ -366,12 +377,9 @@ export const languageSelector: OutputSelector<State, void, string> = createSelec
   o => o.language,
 );
 
-export const localeSelector: OutputSelector<
-  State,
-  void,
-  string,
-> = createSelector(langAndRegionSelector, ({ language, region }) =>
-  region ? `${language}-${region}` : language,
+export const localeSelector: OutputSelector<State, void, string> = createSelector(
+  localeFallbackToLanguageSelector,
+  o => o.locale,
 );
 
 export const getOrderAccounts = (state: State) => state.settings.orderAccounts;
