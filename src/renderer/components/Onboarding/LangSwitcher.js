@@ -9,8 +9,6 @@ import { langAndRegionSelector } from "~/renderer/reducers/settings";
 import { useDispatch, useSelector } from "react-redux";
 import { languageLabels } from "~/renderer/screens/settings/sections/General/LanguageSelect";
 
-import moment from "moment";
-
 const options = [
   { value: "en", support: "full", label: languageLabels.en },
   { value: "fr", support: "full", label: languageLabels.fr },
