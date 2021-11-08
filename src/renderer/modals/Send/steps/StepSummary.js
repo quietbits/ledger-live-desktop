@@ -222,6 +222,7 @@ export default class StepSummary extends PureComponent<StepProps> {
                     fontSize={4}
                     inline
                     showCode
+                    alwaysShowValue
                   />
                   <Box textAlign="right">
                     <CounterValue
@@ -230,6 +231,7 @@ export default class StepSummary extends PureComponent<StepProps> {
                       currency={currency}
                       value={totalSpent}
                       alwaysShowSign={false}
+                      alwaysShowValue
                     />
                   </Box>
                 </Box>
